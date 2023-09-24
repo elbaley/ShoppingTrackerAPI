@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShoppingTrackerAPI.Data;
@@ -16,6 +17,7 @@ public class ProductController: ControllerBase
     }
     
     [HttpGet(Name = "GetProducts")]
+    [Authorize(Roles = "Admin")]
     public string Get()
     {
         Product product = _context.Products.Include(p => p.Category).FirstOrDefault(p => p.Id == 1);
