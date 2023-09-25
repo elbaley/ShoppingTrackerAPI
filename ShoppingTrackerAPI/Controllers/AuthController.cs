@@ -107,6 +107,7 @@ public class AuthController: ControllerBase
         string role = user.Role == UserRole.Admin ? "Admin" : "User";
         List<Claim> claims = new List<Claim>
         {
+            new Claim("userId",user.Id.ToString()),
             new Claim(ClaimTypes.Email,user.Email),
             new Claim(ClaimTypes.Role,role),
         };

@@ -159,7 +159,7 @@ public class ProductController: ControllerBase
         }
         catch (Exception ex)
         {
-            response.Message = "Couldn't delete the prodcut: " + ex.Message;
+            response.Message = "Couldn't delete the product: " + ex.Message;
             response.StatusCode = StatusCodes.Status500InternalServerError;
             return StatusCode(StatusCodes.Status500InternalServerError, response);
         }

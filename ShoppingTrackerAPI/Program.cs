@@ -38,6 +38,7 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
         ValidateIssuer = false,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:SignKey").Value!))
     };
+    options.SaveToken = true;
 } );
 
 var app = builder.Build();
