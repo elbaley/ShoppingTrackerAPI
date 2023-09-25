@@ -19,6 +19,16 @@ public class AppDbContext: DbContext
         optionsBuilder.UseNpgsql(Configuration.GetConnectionString("WebApiDatabase"));
     }
     
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Product>()
+            .HasIndex(p =>p.Name)
+            .IsUnique(true);
+        modelBuilder.Entity<UserList>()
+            .HasIndex(ul => ul.Name)
+            .IsUnique(true);
+    }
+    
     public DbSet<Product> Products { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<User> Users { get; set; }

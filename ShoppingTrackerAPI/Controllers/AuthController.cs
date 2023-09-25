@@ -24,13 +24,18 @@ public class AuthController: ControllerBase
     }
 
     [HttpPost("register")]
-    public ActionResult<User> Register(UserRegisterDto request)
+    [ProducesResponseType(typeof(ApiResponse<User>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<User>), StatusCodes.Status400BadRequest)]
+    public ActionResult<ApiResponse<User>> Register(UserRegisterRequestDto request)
     {
+        var response = new ApiResponse<User>();
         // check if the email is already used
         var existingUser = _context.Users.FirstOrDefault(u => u.Email == request.Email);
         if (existingUser != null)
         {
-            return BadRequest("Email has already been registered!");
+            response.Message = "Email has already been registered!";
+            response.StatusCode = StatusCodes.Status400BadRequest;
+            return BadRequest(response);
         }
         
         // Hash the password
@@ -44,45 +49,66 @@ public class AuthController: ControllerBase
             LastName = request.LastName
         };
         
+        // Make the user's role ADMIN if the email is admin@admin.com 
+        if (newUser.Email == "admin@admin.com")
+        {
+            newUser.Role = UserRole.Admin;
+        }
+        
+        
         // add the new user to db
         _context.Users.Add(newUser);
         _context.SaveChanges();
 
-        return Ok($"Successfully registered with email: {request.Email}");
+        response.Data = newUser;
+        response.StatusCode = StatusCodes.Status201Created;
+        return Created("",response);
     }
     
+    [ProducesResponseType(typeof(ApiResponse<UserResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<UserResponseDto>), StatusCodes.Status400BadRequest)]
     [HttpPost("login")]
-    public ActionResult<User> Login(UserLoginDto request)
+    public ActionResult<ApiResponse<UserResponseDto>> Login(UserLoginRequestDto request)
     {
+        var response = new ApiResponse<UserResponseDto>();
         // check if user exists
         var existingUser = _context.Users.FirstOrDefault(u => u.Email == request.Email);
         
         if (existingUser == null)
         {
-            return BadRequest("User not found");
+            response.Message = "User not found";
+            response.StatusCode = StatusCodes.Status400BadRequest;
+            return BadRequest(response);
         }
         
         // VERIFY
         if (!BCrypt.Net.BCrypt.Verify(request.Password, existingUser.PasswordHash))
         {
-            return BadRequest("Wrong password!");
+            response.Message = "Wrong password";
+            response.StatusCode = StatusCodes.Status400BadRequest;
+            return BadRequest(response);
         }
         
         // Create JWT
         string token = CreateToken(existingUser);
-        
 
-        return Ok(token);
+        // add jwt to response
+        UserResponseDto data = new UserResponseDto
+        {
+            Token = token
+        };
+        response.Data = data;
+        response.StatusCode = StatusCodes.Status200OK;
+        return Ok(response);
     }
 
     private string CreateToken(User user)
     {
+        string role = user.Role == UserRole.Admin ? "Admin" : "User";
         List<Claim> claims = new List<Claim>
         {
             new Claim(ClaimTypes.Email,user.Email),
-            // TODO add user role 
-            new Claim(ClaimTypes.Role,"Admin"),
-            new Claim(ClaimTypes.Role,"User")
+            new Claim(ClaimTypes.Role,role),
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:SignKey").Value!));

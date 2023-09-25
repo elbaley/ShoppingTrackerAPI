@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShoppingTrackerAPI.Models;
 
-public class UserRegisterDto
+public class UserRegisterRequestDto
 {
     [Required(ErrorMessage = "First Name is required")]
     [StringLength(50, MinimumLength = 2, ErrorMessage = "First Name must be between 2 and 50 characters")]
