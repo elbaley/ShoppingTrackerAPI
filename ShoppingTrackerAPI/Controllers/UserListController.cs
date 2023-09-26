@@ -129,8 +129,6 @@ public class UserListController: ControllerBase
         catch (Exception ex)
         {
             response.Message = "Couldn't add new user list: " + ex.Message;
-            Console.WriteLine(ex.Message);
-            Console.WriteLine(ex);
             response.StatusCode = StatusCodes.Status500InternalServerError;
             return StatusCode(StatusCodes.Status500InternalServerError, response);
         }
@@ -179,8 +177,6 @@ public class UserListController: ControllerBase
         catch (Exception ex)
         {
             response.Message = "Couldn't update user list: " + ex.Message;
-            Console.WriteLine(ex.Message);
-            Console.WriteLine(ex);
             response.StatusCode = StatusCodes.Status500InternalServerError;
             return StatusCode(StatusCodes.Status500InternalServerError, response);
         }

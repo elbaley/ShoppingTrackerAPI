@@ -27,6 +27,9 @@ public class AppDbContext: DbContext
         modelBuilder.Entity<UserList>()
             .HasIndex(ul => ul.Name)
             .IsUnique(true);
+        modelBuilder.Entity<UserProduct>()
+            .HasIndex(up => up.UserListId)
+            .IsUnique(true);
     }
     
     public DbSet<Product> Products { get; set; }
