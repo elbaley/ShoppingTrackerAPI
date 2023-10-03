@@ -1,6 +1,7 @@
 using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ShoppingTrackerAPI.Data;
@@ -45,6 +46,13 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
     };
     options.SaveToken = true;
 } );
+
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+
+});
 
 var app = builder.Build();
 

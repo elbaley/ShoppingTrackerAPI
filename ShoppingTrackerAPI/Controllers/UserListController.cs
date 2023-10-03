@@ -38,7 +38,8 @@ public class UserListController: ControllerBase
                 Id = ul.Id,
                 Name = ul.Name,
                 UserId = ul.UserId,
-                StartedShopping = ul.StartedShopping
+                StartedShopping = ul.StartedShopping,
+                
             }).ToList();
 
             response.Data = userLists;
@@ -71,12 +72,23 @@ public class UserListController: ControllerBase
                 Name = ul.Name,
                 UserId = ul.UserId,
                 StartedShopping = ul.StartedShopping,
-                Products = ul.UserProducts.Select(up => new ProductResponseDto
+                Products = ul.UserProducts.Select(up => new UserProductResponseDto
                 {
                     Id = up.Id,
-                    Name = up.Product.Name,
-                    Price= up.Product.Price,
-                    Category = up.Product.Category.Name,
+                    UserId = up.UserId,
+                    UserListId = up.UserListId,
+                    Description = up.Description,
+                    Status = up.IsBought ? "Done" :"Pending",
+                    IsBought = up.IsBought,
+                    Product = new ProductResponseDto
+                    {
+                        Id= up.Product.Id,
+                        Category = up.Product.Category.Name,
+                        Name= up.Product.Name,
+                        Price=up.Product.Price,
+                        ProductImg = up.Product.ProductImg
+                        
+                    }
                 }).ToList()
             }).FirstOrDefault();
 

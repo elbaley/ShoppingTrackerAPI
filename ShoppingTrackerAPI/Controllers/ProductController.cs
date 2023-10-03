@@ -28,7 +28,8 @@ public class ProductController: ControllerBase
                 Id = p.Id,
                 Name = p.Name,
                 Price = p.Price,
-                Category = p.Category.Name
+                Category = p.Category.Name,
+                ProductImg = p.ProductImg
             }).ToList();
 
             response.Data = products;
@@ -57,7 +58,8 @@ public class ProductController: ControllerBase
             {
                 Name = request.Name,
                 Price = request.Price,
-                CategoryId = request.CategoryId
+                CategoryId = request.CategoryId,
+                ProductImg = request.ProductImg
             };
             
             _context.Products.Add(newProduct);
@@ -71,7 +73,9 @@ public class ProductController: ControllerBase
                     Id = p.Id,
                     Name = p.Name,
                     Price = p.Price,
-                    Category = p.Category.Name
+                    Category = p.Category.Name,
+                    ProductImg = p.ProductImg
+                    
                 })
                 .FirstOrDefault();
 
@@ -109,6 +113,7 @@ public class ProductController: ControllerBase
             existingProduct.Name = request.Name;
             existingProduct.Price = request.Price;
             existingProduct.CategoryId = request.CategoryId;
+            existingProduct.ProductImg = request.ProductImg;
 
             _context.SaveChanges();
 
@@ -117,7 +122,8 @@ public class ProductController: ControllerBase
                 Id = existingProduct.Id,
                 Name = existingProduct.Name,
                 Price = existingProduct.Price,
-                Category = existingProduct.Category.Name
+                Category = existingProduct.Category.Name,
+                ProductImg = existingProduct.ProductImg
             };
 
             response.Data = updatedProduct;

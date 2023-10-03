@@ -7,6 +7,6 @@ public class UserListResponseDto
     public string Name { get; set; } = string.Empty;
     public bool StartedShopping { get; set; } = false;
 
-    public List<ProductResponseDto>? Products { get; set; }
+    public List<UserProductResponseDto>? Products { get; set; }
 }
     

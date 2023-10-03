@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Runtime.InteropServices.JavaScript;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualBasic.CompilerServices;
@@ -71,6 +72,21 @@ public class AuthController: ControllerBase
     public ActionResult<ApiResponse<UserResponseDto>> Login(UserLoginRequestDto request)
     {
         var response = new ApiResponse<UserResponseDto>();
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+
+            var customErrorMessage = string.Join("; ", errors); 
+
+            response.Message = customErrorMessage;
+            response.StatusCode = StatusCodes.Status400BadRequest;
+            return BadRequest(response);
+            ;
+        } 
+        // validation error
         // check if user exists
         var existingUser = _context.Users.FirstOrDefault(u => u.Email == request.Email);
         
@@ -95,6 +111,7 @@ public class AuthController: ControllerBase
         // add jwt to response
         UserResponseDto data = new UserResponseDto
         {
+            Name=existingUser.FirstName,
             Token = token
         };
         response.Data = data;

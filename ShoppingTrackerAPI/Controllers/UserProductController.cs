@@ -37,8 +37,15 @@ public class UserProductController:ControllerBase
             var userProducts = _context.UserProducts.Include(ul=> ul.Product).Where(up => up.UserId == userId).Select(up => new UserProductResponseDto
             {
                 Id = up.Id,
-                Name = up.Product.Name,
-                ProductId = up.Product.Id,
+                    Product = new ProductResponseDto
+                    {
+                        Id= up.Product.Id,
+                        Category = up.Product.Category.Name,
+                        Name= up.Product.Name,
+                        Price=up.Product.Price,
+                        ProductImg = up.Product.ProductImg
+                        
+                    },
                 UserListId = up.UserListId,
                 Description = up.Description,
                 IsBought = up.IsBought,
@@ -70,7 +77,15 @@ public class UserProductController:ControllerBase
             var userProduct = _context.UserProducts.Where(up => up.Id == id && up.UserId == userId).Include(up=>up.Product).Select(up => new UserProductResponseDto
             {
                 Id = up.Id,
-                Name = up.Product.Name,
+                Product = new ProductResponseDto
+                {
+                    Id= up.Product.Id,
+                    Category = up.Product.Category.Name,
+                    Name= up.Product.Name,
+                    Price=up.Product.Price,
+                    ProductImg = up.Product.ProductImg
+                    
+                },
                 UserId = up.UserId,
                 IsBought = up.IsBought,
                 
@@ -121,8 +136,14 @@ public class UserProductController:ControllerBase
                 .Where(up => up.Id == newUserProduct.Id).Select(up => new UserProductResponseDto
                 {
                     Id = up.Id,
-                    ProductId = up.ProductId,
-                    Name = up.Product.Name,
+                    Product = new ProductResponseDto
+                    {
+                        Id= up.Product.Id,
+                        Category = up.Product.Category.Name,
+                        Name= up.Product.Name,
+                        Price=up.Product.Price,
+                        ProductImg = up.Product.ProductImg
+                    },
                     UserId = userId,
                     UserListId = up.UserListId,
                     Description = up.Description,
@@ -154,7 +175,7 @@ public class UserProductController:ControllerBase
         try
         {
             var existingUserProduct = _context.UserProducts.Include(up => up.Product)
-                .Where(up => up.Id == id && up.UserId == userId).FirstOrDefault();
+                .ThenInclude(up=> up.Category).Where(up => up.Id == id && up.UserId == userId).FirstOrDefault();
             if (existingUserProduct is null)
             {
                 response.Message = "User product does not exist!";
@@ -178,9 +199,17 @@ public class UserProductController:ControllerBase
                 Id = existingUserProduct.Id,
                 Description = existingUserProduct.Description,
                 IsBought = existingUserProduct.IsBought,
-                Name = existingUserProduct.Product.Name,
+                Status = existingUserProduct.IsBought ? "Done" :"Pending",
                 UserId = existingUserProduct.UserId,
                 UserListId = existingUserProduct.UserListId,
+                Product = new ProductResponseDto
+                {
+                    Id= existingUserProduct.Product.Id,
+                    Category = existingUserProduct.Product.Category.Name,
+                    Name= existingUserProduct.Product.Name,
+                    Price=existingUserProduct.Product.Price,
+                    ProductImg = existingUserProduct.Product.ProductImg
+                },
             };
             
             response.Data = updatedUserProduct;
@@ -190,6 +219,7 @@ public class UserProductController:ControllerBase
         catch (Exception ex)
         {
             response.Message = "Couldn't update user product: " + ex.Message;
+            Console.WriteLine(ex);
             response.StatusCode = StatusCodes.Status500InternalServerError;
             return StatusCode(StatusCodes.Status500InternalServerError, response);
         }
