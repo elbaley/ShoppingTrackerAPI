@@ -1,6 +1,4 @@
 using System.Text;
-using System.Threading.RateLimiting;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -38,7 +36,7 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        // TODO validate issuer and audience based on appsettings.json
+        // validate issuer and audience based on appsettings.json
         ValidateIssuerSigningKey = true,
         ValidateAudience = false,
         ValidateIssuer = false,
