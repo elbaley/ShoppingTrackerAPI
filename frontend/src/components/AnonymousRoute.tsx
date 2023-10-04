@@ -4,7 +4,7 @@ interface AnonymousRouteProps {}
 
 const AnonymousRoute = ({}: AnonymousRouteProps) => {
   const { user } = useAuth();
-  return user ? <Navigate to="/products" replace /> : <Outlet />;
+  return user ? <Navigate to="/app/products" replace /> : <Outlet />;
 };
 
 export default AnonymousRoute;
