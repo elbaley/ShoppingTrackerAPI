@@ -1,3 +1,8 @@
-ShoppingTrackerAPI/bin/
-ShoppingTrackerAPI/obj/
+bin/
+obj/
+
+# Node.js ve NPM özel dosyalar
+node_modules/
+npm-debug.log
+yarn-error.log
 
