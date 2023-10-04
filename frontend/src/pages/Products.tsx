@@ -90,13 +90,6 @@ const Products = ({}: ProductsProps) => {
             userLists={userLists}
           />
         ))}
-        {filteredProducts.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            userLists={userLists}
-          />
-        ))}
       </div>
     </main>
   );
