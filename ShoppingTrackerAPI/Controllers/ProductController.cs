@@ -17,7 +17,7 @@ public class ProductController: ControllerBase
     }
     
     [HttpGet(Name = "GetProducts")]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Admin,User")]
     public ActionResult<ApiResponse<List<ProductResponseDto>>> Get()
     {
         var response = new ApiResponse<List<ProductResponseDto>>();
@@ -29,6 +29,7 @@ public class ProductController: ControllerBase
                 Name = p.Name,
                 Price = p.Price,
                 Category = p.Category.Name,
+                CategoryId = p.Category.Id,
                 ProductImg = p.ProductImg
             }).ToList();
 
@@ -74,6 +75,7 @@ public class ProductController: ControllerBase
                     Name = p.Name,
                     Price = p.Price,
                     Category = p.Category.Name,
+                    CategoryId = p.Category.Id,
                     ProductImg = p.ProductImg
                     
                 })
@@ -123,6 +125,7 @@ public class ProductController: ControllerBase
                 Name = existingProduct.Name,
                 Price = existingProduct.Price,
                 Category = existingProduct.Category.Name,
+                CategoryId = existingProduct.CategoryId,
                 ProductImg = existingProduct.ProductImg
             };
 

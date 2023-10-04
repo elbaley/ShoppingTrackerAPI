@@ -30,6 +30,21 @@ public class AuthController: ControllerBase
     public ActionResult<ApiResponse<User>> Register(UserRegisterRequestDto request)
     {
         var response = new ApiResponse<User>();
+        // validation error 
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+
+            var customErrorMessage = string.Join("; ", errors); 
+
+            response.Message = customErrorMessage;
+            response.StatusCode = StatusCodes.Status400BadRequest;
+            return BadRequest(response);
+            ;
+        } 
         // check if the email is already used
         var existingUser = _context.Users.FirstOrDefault(u => u.Email == request.Email);
         if (existingUser != null)
@@ -112,7 +127,8 @@ public class AuthController: ControllerBase
         UserResponseDto data = new UserResponseDto
         {
             Name=existingUser.FirstName,
-            Token = token
+            Token = token,
+            Role= existingUser.Role.ToString()
         };
         response.Data = data;
         response.StatusCode = StatusCodes.Status200OK;

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShoppingTrackerAPI.Data;
@@ -116,8 +117,18 @@ public class UserProductController:ControllerBase
     [Authorize(Roles = "User")]
     public ActionResult<ApiResponse<UserProductResponseDto>> Add(UserProductRequestDto request)
     {
-        int userId = FetchUserId();
+        
         var response = new ApiResponse<UserProductResponseDto>();
+        int userId = FetchUserId();
+        // check if it is already on the list
+        var existingUserProduct = _context.UserProducts.Where(up => up.ProductId == request.ProductId && up.UserListId == request.UserListId).FirstOrDefault();
+        if (existingUserProduct is not null)
+        {
+            response.Message = "You already added this product to this list!";
+            response.StatusCode = StatusCodes.Status400BadRequest;
+            return BadRequest(response);
+        }
+        
         try
         {
             var newUserProduct = new UserProduct
@@ -152,7 +163,7 @@ public class UserProductController:ControllerBase
             
             response.Data = addedUserProduct;
             response.StatusCode = StatusCodes.Status201Created;
-            return Created("", response);
+            return StatusCode(StatusCodes.Status201Created, response);
         }
         catch (Exception ex)
         {

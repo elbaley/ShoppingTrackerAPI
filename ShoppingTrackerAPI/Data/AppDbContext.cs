@@ -21,14 +21,14 @@ public class AppDbContext: DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Category>()
+            .HasIndex(c =>c.Name)
+            .IsUnique(true);
         modelBuilder.Entity<Product>()
             .HasIndex(p =>p.Name)
             .IsUnique(true);
         modelBuilder.Entity<UserList>()
             .HasIndex(ul => ul.Name)
-            .IsUnique(true);
-        modelBuilder.Entity<UserProduct>()
-            .HasIndex(up => up.UserListId)
             .IsUnique(true);
     }
     

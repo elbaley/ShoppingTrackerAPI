@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingTrackerAPI.Data;
 using ShoppingTrackerAPI.Models;
@@ -48,6 +49,14 @@ public class CategoryController:ControllerBase
     public ActionResult<ApiResponse<CategoryResponseDto>> Add(CategoryRequestDto request)
     {
         var response = new ApiResponse<CategoryResponseDto>();
+        // check if the category exists
+        var existingCategory = _context.Categories.Where(cat => cat.Name == request.Name).FirstOrDefault();
+        if (existingCategory is not null)
+        {
+            response.Message = "Category names should be unique!";
+            response.StatusCode = StatusCodes.Status400BadRequest;
+            return BadRequest(response);
+        }
         try
         {
             var newCategory = new Category
@@ -84,6 +93,15 @@ public class CategoryController:ControllerBase
     public ActionResult<ApiResponse<CategoryResponseDto>> Update(int id, CategoryRequestDto request)
     {
         var response = new ApiResponse<CategoryResponseDto>();
+        
+        // check if the category exists
+        var categoryWithSameName = _context.Categories.Where(cat => cat.Name == request.Name).FirstOrDefault();
+        if (categoryWithSameName is not null)
+        {
+            response.Message = "Category names should be unique!";
+            response.StatusCode = StatusCodes.Status400BadRequest;
+            return BadRequest(response);
+        }
         try
         {
             var existingCategory = _context.Categories.FirstOrDefault(c => c.Id == id);
