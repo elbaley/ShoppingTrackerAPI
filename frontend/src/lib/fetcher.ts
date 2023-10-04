@@ -15,7 +15,6 @@ export const fetcher = async ({
   json = true,
   token,
 }: IFetcherProps) => {
-  console.log(baseURL + url);
   const res = await fetch(baseURL + url, {
     mode: "cors",
     method,

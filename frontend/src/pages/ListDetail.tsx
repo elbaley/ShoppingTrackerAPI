@@ -44,7 +44,6 @@ const ListDetail = ({}: ListDetailProps) => {
   }
 
   function toggleStartedShopping() {
-    console.log("toggling");
     fetcher({
       url: `/UserList/?id=${params.id}`,
       method: "PUT",

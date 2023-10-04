@@ -40,7 +40,6 @@ const AddProductModal = ({ categories }: AddProductModalProps) => {
         json: false,
         body: formState,
       }).then((data) => {
-        console.log("data su", data);
         if (data.statusCode === 201) {
           toast.success("Added new product");
         } else {

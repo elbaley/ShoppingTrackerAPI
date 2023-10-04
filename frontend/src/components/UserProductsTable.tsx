@@ -13,7 +13,6 @@ import { ActionIcon, Flex, Tooltip, Text } from "@mantine/core";
 import { ModalsProvider, modals } from "@mantine/modals";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
 interface UserProductsTableProps {
   startedShopping: boolean;
@@ -26,7 +25,6 @@ const UserProductsTable = ({
   fetchUserLists,
 }: UserProductsTableProps) => {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [tableData, setTableData] = useState<IUserProduct[]>(
     () => userProducts,
   );
@@ -39,8 +37,6 @@ const UserProductsTable = ({
       token: user.token,
       json: false,
     }).then((data) => {
-      console.log("data geldi elime");
-      console.log(data);
       if (data.statusCode !== 200) {
         toast.error(data.message);
       } else {
@@ -52,10 +48,6 @@ const UserProductsTable = ({
 
   const handleSaveRow: MRT_TableOptions<IUserProduct>["onEditingRowSave"] =
     async ({ table, row, values }) => {
-      console.log("Row saved!!");
-      console.log(table);
-      console.log(row);
-      console.log(values);
       const updatedUserProduct = {
         productId: values["product.id"],
         userListId: values.userListId,
@@ -125,9 +117,6 @@ const UserProductsTable = ({
   );
 
   const openDeleteConfirmModal = (row: MRT_Row<any>) => {
-    console.log("ROW BURASI");
-    console.log(row);
-
     return modals.openConfirmModal({
       title: "Are you sure you want to delete this user?",
       children: (
@@ -175,8 +164,6 @@ const UserProductsTable = ({
       <MantineReactTable table={table} />
     </ModalsProvider>
   );
-
-  return <MantineReactTable table={table} />;
 };
 
 export default UserProductsTable;

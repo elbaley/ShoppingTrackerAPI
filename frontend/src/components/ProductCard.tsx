@@ -56,7 +56,6 @@ const ProductCard = ({ product, userLists }: ProductCardProps) => {
       token: user.token,
     })
       .then((data) => {
-        console.log("data geldi");
         console.log(data);
         if (data.statusCode !== 201) {
           toast.error(data.message);
